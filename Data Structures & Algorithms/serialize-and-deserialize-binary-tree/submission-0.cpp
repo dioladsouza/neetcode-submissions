@@ -1,0 +1,75 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+
+class Codec {
+public:
+
+    // Encodes a tree to a single string.
+    string serialize(TreeNode* root) {
+        //using level order traversal
+        if(root == NULL) return "";
+        string s = "";
+        queue<TreeNode*> q;
+        q.push(root);
+        while(!q.empty())
+        {
+            TreeNode* front = q.front();
+            q.pop();
+            if(front == NULL)
+                s += "#,";
+            else
+                s += to_string(front->val) + ",";
+            if(front != NULL)
+            {   q.push(front->left);
+                q.push(front->right);
+            }
+        }
+        return s;
+    }
+
+    // Decodes your encoded data to tree.
+    TreeNode* deserialize(string data) {
+        if(data == "") return NULL;
+        stringstream s(data);
+        string str;
+        getline(s, str, ',');
+        TreeNode* root = new TreeNode(stoi(str));
+        queue<TreeNode*> q;
+        q.push(root);
+        while(!q.empty())
+        {
+            TreeNode* front = q.front();
+            q.pop();
+
+            getline(s, str, ',');
+            if(str == "#")
+                front->left == NULL;
+            else
+            {
+                TreeNode* leftNode = new TreeNode(stoi(str));
+                front->left = leftNode;
+                q.push(leftNode);
+            }
+
+            getline(s, str, ',');
+            if(str == "#")
+                front->right == NULL;
+            else
+            {
+                TreeNode* rightNode = new TreeNode(stoi(str));
+                front->right = rightNode;
+                q.push(rightNode);
+            }
+        }
+        return root;
+    }
+};
